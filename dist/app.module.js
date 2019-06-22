@@ -12,6 +12,7 @@ const app_service_1 = require("./app.service");
 const common_module_1 = require("./common/common.module");
 const logger_middleware_1 = require("./logger.middleware");
 const cats_controller_1 = require("./cats/cats.controller");
+const auth_service_service_1 = require("./auth-service/auth-service.service");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -24,7 +25,7 @@ AppModule = __decorate([
     common_1.Module({
         imports: [common_module_1.CoreModule],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, auth_service_service_1.AuthServiceService],
     })
 ], AppModule);
 exports.AppModule = AppModule;

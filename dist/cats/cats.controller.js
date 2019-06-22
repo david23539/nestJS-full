@@ -25,6 +25,10 @@ const create_cat_dto_1 = require("./create-cat.dto");
 const cats_service_1 = require("./cats.service");
 const http_exception_filter_1 = require("../http-exception.filter");
 const validation_pipe_1 = require("../validation.pipe");
+const parse_adapter_pipe_1 = require("../parse-adapter.pipe");
+const auth_guard_guard_1 = require("../auth-guard.guard");
+const logging_interceptor_1 = require("../logging.interceptor");
+const transformer_interceptor_interceptor_1 = require("../transformer-interceptor.interceptor");
 let CatsController = class CatsController {
     constructor(catsService) {
         this.catsService = catsService;
@@ -90,7 +94,7 @@ __decorate([
 ], CatsController.prototype, "create", null);
 __decorate([
     common_1.Post('crear'),
-    __param(0, common_1.Body(new validation_pipe_1.ValidationPipe())),
+    __param(0, common_1.Body(new validation_pipe_1.ValidationPipe(), new parse_adapter_pipe_1.ParseAdapterPipe())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_cat_dto_1.CreateCatDto]),
     __metadata("design:returntype", Promise)
@@ -118,6 +122,8 @@ __decorate([
 CatsController = __decorate([
     common_1.Controller('cats'),
     common_1.UseFilters(new http_exception_filter_1.HttpExceptionFilter()),
+    common_1.UseGuards(auth_guard_guard_1.AuthGuardGuard),
+    common_1.UseInterceptors(logging_interceptor_1.LoggingInterceptor, transformer_interceptor_interceptor_1.TransformerInterceptorInterceptor),
     __metadata("design:paramtypes", [cats_service_1.CatsService])
 ], CatsController);
 exports.CatsController = CatsController;

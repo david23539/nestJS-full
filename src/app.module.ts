@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { CoreModule } from './common/common.module';
 import { logger } from './logger.middleware';
 import { CatsController } from './cats/cats.controller';
+import { AuthServiceService } from './auth-service/auth-service.service';
 
 @Module({
   imports: [CoreModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthServiceService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {

@@ -9,8 +9,8 @@ import {
   HttpStatus,
   Param,
   Post,
-  Req,
-  UseFilters,
+  Req, SetMetadata,
+  UseFilters, UseGuards, UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import {Request} from 'express';
@@ -18,12 +18,18 @@ import { CreateCatDto } from './create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cats.interface';
 import { HttpExceptionFilter } from '../http-exception.filter';
-import { JoiValidationPipe } from '../joi-validation.pipe';
 import { ValidationPipe } from '../validation.pipe';
+import { ParseAdapterPipe } from '../parse-adapter.pipe';
+import { AuthGuardGuard } from '../auth-guard.guard';
+import { Roles } from '../roles.decorator';
+import { LoggingInterceptor } from '../logging.interceptor';
+import { TransformerInterceptorInterceptor } from '../transformer-interceptor.interceptor';
 
 
 @Controller('cats')
 @UseFilters(new HttpExceptionFilter()) //filtro personalizado de excepciones a nivel de clase
+@UseGuards(AuthGuardGuard) //Guards de autenticación
+@UseInterceptors(LoggingInterceptor, TransformerInterceptorInterceptor) // interceptor de la peticion
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
   /*GET
@@ -70,7 +76,9 @@ export class CatsController {
   * CreateCatDTO
   * */
   @Post('crear')
-  async create4(@Body(new ValidationPipe()) createDTO: CreateCatDto) {
+  // @SetMetadata('roles', ['admin']) // limitamos con el guards el tipo de usuario que puede acceder a esta peticion
+  // @Roles('admin') // es lo mismo que lo anterior pero creando nuestro propio decorador
+  async create4(@Body(new ValidationPipe(), new ParseAdapterPipe()) createDTO: CreateCatDto) {
     this.catsService.create(createDTO);
     return 'this cat is created' + createDTO.name;
   }
